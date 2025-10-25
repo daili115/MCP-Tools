@@ -115,7 +115,7 @@
   {"tool_name":"supabase-mcp","version":"latest","dependencies":["node>=18"],"install_commands":["npm install -g supabase-mcp"],"config_options":{}},
   {"tool_name":"firebase-mcp","version":"latest","dependencies":["node>=18"],"install_commands":["npm install -g firebase-mcp"],"config_options":{}},
   {"tool_name":"firestore-mcp","version":"latest","dependencies":["node>=18"],"install_commands":["npm install -g firestore-mcp"],"config_options":{}},
-  {"tool_name":"neo4j-mcp","version":"latest","dependencies":["python>=3.10"],"install_commands":["pip install neo4j-mcp"],,"config_options":{}},
+  {"tool_name":"neo4j-mcp","version":"latest","dependencies":["python>=3.10"],"install_commands":["pip install neo4j-mcp"],"config_options":{}},
   {"tool_name":"apple-calendar-mcp","version":"latest","dependencies":["python>=3.10"],"install_commands":["pip install apple-calendar-mcp"],"config_options":{}},
   {"tool_name":"apple-books-mcp","version":"latest","dependencies":["python>=3.10"],"install_commands":["pip install apple-books-mcp"],"config_options":{}},
   {"tool_name":"apple-docs-mcp","version":"latest","dependencies":["python>=3.10"],"install_commands":["pip install apple-docs-mcp"],"config_options":{}},
