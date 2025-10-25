@@ -1,0 +1,46 @@
+name: Validate MCP Tools Configs
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate JSON files
+        run: |
+          node -e '
+          const fs = require("fs");
+          const path = require("path");
+          const requiredInstallKeys = ["tool_name","version","dependencies","install_commands","config_options"];
+          const requiredMetaKeys = ["name","version","description","author","compatibility","category"];
+          const installPath = path.join(process.cwd(), "configs", "tools-install.json");
+          const metaPath = path.join(process.cwd(), "tools", "index.json");
+          const install = JSON.parse(fs.readFileSync(installPath, "utf8"));
+          const meta = JSON.parse(fs.readFileSync(metaPath, "utf8"));
+          if(!Array.isArray(install)) throw new Error("tools-install.json must be an array");
+          if(!Array.isArray(meta)) throw new Error("tools/index.json must be an array");
+          if(install.length !== 100) throw new Error("Expected 100 install entries, got " + install.length);
+          if(meta.length !== 100) throw new Error("Expected 100 metadata entries, got " + meta.length);
+          const checkKeys = (obj, keys) => keys.every(k => Object.prototype.hasOwnProperty.call(obj, k));
+          install.forEach((o, i) => {
+            if(!checkKeys(o, requiredInstallKeys)) throw new Error("Install entry missing keys at index " + i);
+            if(typeof o.tool_name !== "string" || !o.tool_name.trim()) throw new Error("Invalid tool_name at index " + i);
+            if(!Array.isArray(o.dependencies)) throw new Error("dependencies must be array at index " + i);
+            if(!Array.isArray(o.install_commands) || o.install_commands.length === 0) throw new Error("install_commands must be non-empty array at index " + i);
+            if(typeof o.config_options !== "object") throw new Error("config_options must be object at index " + i);
+          });
+          meta.forEach((o, i) => {
+            if(!checkKeys(o, requiredMetaKeys)) throw new Error("Metadata entry missing keys at index " + i);
+            if(typeof o.name !== "string" || !o.name.trim()) throw new Error("Invalid name at index " + i);
+            if(typeof o.author !== "string" || !o.author.trim()) throw new Error("Invalid author at index " + i);
+            if(typeof o.compatibility !== "string" || !o.compatibility.trim()) throw new Error("Invalid compatibility at index " + i);
+            if(typeof o.category !== "string" || !o.category.trim()) throw new Error("Invalid category at index " + i);
+          });
+          console.log("JSON validation passed: 100 tools, required keys present.");
+          '
